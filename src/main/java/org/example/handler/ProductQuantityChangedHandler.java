@@ -11,7 +11,7 @@ public class ProductQuantityChangedHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductQuantityChangedHandler.class);
 
-    @KafkaListener(topics = "product-quantity-changed-events-topic")
+    @KafkaListener(topics = "product-quantity-changed-events-topic", groupId = "product-quantity-changed")
     public void handleEvent(ProductQuantityChangedEvent event) {
         LOGGER.info("Event handled. Event is: {}", event.toString());
     }
