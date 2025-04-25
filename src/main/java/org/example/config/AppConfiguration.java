@@ -40,6 +40,8 @@ public class AppConfiguration {
 
     @Bean
     public KafkaTemplate<String, CreateProductEvent> kafkaTemplate(ProducerFactory<String, CreateProductEvent> factory) {
+        Map<String, Object> configs = factory.getConfigurationProperties();
+        System.out.println("producer " + configs);
         return new KafkaTemplate<>(factory);
     }
 
@@ -63,6 +65,8 @@ public class AppConfiguration {
     public ConcurrentKafkaListenerContainerFactory<String, ProductQuantityChangedEvent> kafkaListenerContainerFactory(
             ConsumerFactory<String, ProductQuantityChangedEvent> consumerFactory
     ) {
+        Map<String, Object> configs = consumerFactory.getConfigurationProperties();
+        System.out.println("consumer " + configs);
         var factory = new ConcurrentKafkaListenerContainerFactory<String, ProductQuantityChangedEvent>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
