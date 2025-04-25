@@ -31,6 +31,10 @@ public abstract class BaseTest {
     @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
+    static {
+        kafkaContainer.start();
+    }
+
     @DynamicPropertySource
     static void kafkaProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers);
@@ -41,16 +45,6 @@ public abstract class BaseTest {
 
     @Autowired
     protected KafkaTemplate<String, Object> kafkaTemplate;
-
-    @BeforeEach
-    public void setUp() {
-        kafkaContainer.start();
-    }
-
-    @AfterEach
-    public void tearDown() {
-        kafkaContainer.stop();
-    }
 
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
