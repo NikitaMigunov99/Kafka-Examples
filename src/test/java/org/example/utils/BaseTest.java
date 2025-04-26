@@ -3,13 +3,10 @@ package org.example.utils;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
-import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -41,9 +38,6 @@ public abstract class BaseTest {
     }
 
     @Autowired
-    protected ConsumerFactory<String, Object> consumerFactory;
-
-    @Autowired
     protected KafkaTemplate<String, Object> kafkaTemplate;
 
     @Bean
@@ -55,6 +49,11 @@ public abstract class BaseTest {
         configProps.put(ProducerConfig.ACKS_CONFIG, "all");
         configProps.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, 1000);
         return new DefaultKafkaProducerFactory<>(configProps);
+    }
+
+    @Bean
+    public KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> factory) {
+        return new KafkaTemplate<>(factory);
     }
 
     protected Map<String, Object> getConsumerProperties() {

@@ -24,18 +24,18 @@ public class CreateProductService {
         String id = UUID.randomUUID().toString();
         var event = new CreateProductEvent(id, productDTO.title(), productDTO.price(), productDTO.quantity());
 
-       kafkaTemplate.send("product-created-events-topic", id, event)
-               .whenComplete((sendResult, throwable) -> {
-                    if (throwable != null) {
-                        LOGGER.error("Error sending message", throwable);
-                    } else {
-                        RecordMetadata metadata = sendResult.getRecordMetadata();
-                        LOGGER.info("Topic: {}", metadata.topic());
-                        LOGGER.info("Partition: {}", metadata.partition());
-                        LOGGER.info("Offset: {}", metadata.offset());
-                    }
-                }
-        );
+        kafkaTemplate.send("product-created-events-topic", id, event)
+                .whenComplete((sendResult, throwable) -> {
+                            if (throwable != null) {
+                                LOGGER.error("Error sending message", throwable);
+                            } else {
+                                RecordMetadata metadata = sendResult.getRecordMetadata();
+                                LOGGER.info("Topic: {}", metadata.topic());
+                                LOGGER.info("Partition: {}", metadata.partition());
+                                LOGGER.info("Offset: {}", metadata.offset());
+                            }
+                        }
+                );
         LOGGER.info("Created product with id: {}", id);
         return id;
     }
