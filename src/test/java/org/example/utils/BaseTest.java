@@ -44,7 +44,6 @@ public abstract class BaseTest {
         return Map.of(
                 "bootstrap.servers", bootstrapAddress,
                 "acks", "all",
-                "delivery.timeout.ms", 1000,
                 "key.serializer", StringSerializer.class,
                 "value.serializer", JsonSerializer.class);
     }
