@@ -41,7 +41,8 @@ public class AppConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, CreateProductEvent> kafkaTemplate(ProducerFactory<String, CreateProductEvent> factory) {
+    public KafkaTemplate<String, CreateProductEvent> kafkaTemplate() {
+        ProducerFactory<String, CreateProductEvent> factory = producerFactory();
         Map<String, Object> configs = factory.getConfigurationProperties();
         System.out.println("producer " + configs);
         return new KafkaTemplate<>(factory);
