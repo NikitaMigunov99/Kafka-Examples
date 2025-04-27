@@ -78,7 +78,13 @@ public class AppConfiguration {
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class.getName());
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "product-quantity-changed");
-        return new DefaultKafkaConsumerFactory<>(configProps);
+        JsonDeserializer<ProductQuantityChangedEvent> payloadJsonDeserializer = new JsonDeserializer<>();
+        payloadJsonDeserializer.addTrustedPackages("org.example");
+        return new DefaultKafkaConsumerFactory<>(
+                configProps,
+                new StringDeserializer(),
+                payloadJsonDeserializer
+        );
     }
 
     @Bean
