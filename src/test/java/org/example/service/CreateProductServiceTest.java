@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.example.models.CreateProductDTO;
 import org.example.models.event.CreateProductEvent;
@@ -11,10 +12,13 @@ import org.springframework.kafka.test.utils.KafkaTestUtils;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CreateProductServiceTest extends BaseTest {
+
+    private static final String TOPIC = "product-created-events-topic";
 
     @Autowired
     private CreateProductService service;
@@ -24,9 +28,12 @@ public class CreateProductServiceTest extends BaseTest {
         service.createProduct(new CreateProductDTO("Computer", new BigDecimal("100.00"), 5));
 
         var consumerFactory = new DefaultKafkaConsumerFactory<String, CreateProductEvent>(getConsumerProperties());
+        Consumer<String, CreateProductEvent> testConsumer = consumerFactory.createConsumer("test", "test");
+        testConsumer.subscribe(List.of(TOPIC));
+
         ConsumerRecord<String, CreateProductEvent> consumerRecord = KafkaTestUtils.getSingleRecord(
-                consumerFactory.createConsumer(),
-                "product-created-events-topic",
+                testConsumer,
+                TOPIC,
                 Duration.ofMillis(10000)
         );
 

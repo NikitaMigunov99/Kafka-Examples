@@ -33,7 +33,6 @@ public abstract class BaseTest {
     protected Map<String, Object> getConsumerProperties() {
         return Map.of(
                 "bootstrap.servers", bootstrapAddress,
-                "group.id", "test-group",
                 "auto.offset.reset", "earliest",
                 "key.deserializer", StringDeserializer.class,
                 "value.deserializer", JsonDeserializer.class
