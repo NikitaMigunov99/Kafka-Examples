@@ -20,6 +20,8 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
+import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
@@ -43,7 +45,6 @@ public class AppConfiguration {
 
     @Bean
     public KafkaTemplate<String, CreateProductEvent> kafkaTemplate(ProducerFactory<String, CreateProductEvent> factory) {
-        Map<String, Object> configs = factory.getConfigurationProperties();
         return new KafkaTemplate<>(factory);
     }
 
@@ -65,10 +66,14 @@ public class AppConfiguration {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, ProductQuantityChangedEvent> kafkaListenerContainerFactory(
-            ConsumerFactory<String, ProductQuantityChangedEvent> consumerFactory
+            ConsumerFactory<String, ProductQuantityChangedEvent> consumerFactory,
+            KafkaTemplate<String, Object> kafkaTemplate
     ) {
         var factory = new ConcurrentKafkaListenerContainerFactory<String, ProductQuantityChangedEvent>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consumerFactory);
+
+        DefaultErrorHandler errorHandler = new DefaultErrorHandler(new DeadLetterPublishingRecoverer(kafkaTemplate));
+        factory.setCommonErrorHandler(errorHandler);
         return factory;
     }
 
@@ -82,6 +87,20 @@ public class AppConfiguration {
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "product-quantity-changed");
         configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "org.example");
         return new DefaultKafkaConsumerFactory<>(configProps);
+    }
+
+    @Bean
+    public KafkaTemplate<String, Object> deadLetterKafkaTemplate(ProducerFactory<String, Object> factory) {
+        return new KafkaTemplate<>(factory);
+    }
+
+    @Bean
+    public ProducerFactory<String, Object> deadLetterProducerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class.getName());
+        return new DefaultKafkaProducerFactory<>(configProps);
     }
 
     @Bean
