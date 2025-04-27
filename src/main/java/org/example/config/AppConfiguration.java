@@ -20,6 +20,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
@@ -76,15 +77,11 @@ public class AppConfiguration {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class.getName());
+        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class.getName());
+        configProps.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "product-quantity-changed");
-        JsonDeserializer<ProductQuantityChangedEvent> payloadJsonDeserializer = new JsonDeserializer<>();
-        payloadJsonDeserializer.addTrustedPackages("org.example");
-        return new DefaultKafkaConsumerFactory<>(
-                configProps,
-                new StringDeserializer(),
-                payloadJsonDeserializer
-        );
+        configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "org.example");
+        return new DefaultKafkaConsumerFactory<>(configProps);
     }
 
     @Bean
