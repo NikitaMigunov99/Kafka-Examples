@@ -50,7 +50,7 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
 
         var consumerFactory = new DefaultKafkaConsumerFactory<String, WrongEvent>(getConsumerProperties());
         Consumer<String, WrongEvent> testConsumer = consumerFactory.createConsumer("test-group", "test");
-        testConsumer.subscribe(List.of("product-quantity-changed-events-topic.DTL"));
+        testConsumer.subscribe(List.of("product-quantity-changed-events-topic.DLT"));
 
         ConsumerRecord<String, WrongEvent> consumerRecord = KafkaTestUtils.getSingleRecord(
                 testConsumer,
