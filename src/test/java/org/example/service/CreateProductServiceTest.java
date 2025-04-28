@@ -39,7 +39,7 @@ public class CreateProductServiceTest extends BaseTest {
 
         CreateProductEvent event = consumerRecord.value();
         assertThat(event).isNotNull();
-        assertThat(event.getTitle()).isEqualTo(new BigDecimal("Computer"));
+        assertThat(event.getTitle()).isEqualTo("Computer");
         assertThat(event.getPrice()).isEqualTo(new BigDecimal("100.00"));
         assertThat(event.getQuantity()).isEqualTo(5);
     }
