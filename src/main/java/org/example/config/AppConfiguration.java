@@ -6,6 +6,8 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.example.exception.NonRetryableException;
+import org.example.exception.RetryableException;
 import org.example.models.event.CreateProductEvent;
 import org.example.models.event.ProductQuantityChangedEvent;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +27,7 @@ import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,8 +75,14 @@ public class AppConfiguration {
         var factory = new ConcurrentKafkaListenerContainerFactory<String, ProductQuantityChangedEvent>();
         factory.setConsumerFactory(consumerFactory);
 
-        DefaultErrorHandler errorHandler = new DefaultErrorHandler(new DeadLetterPublishingRecoverer(kafkaTemplate));
-        factory.setCommonErrorHandler(errorHandler);
+        DefaultErrorHandler errorHandler = new DefaultErrorHandler(
+                new DeadLetterPublishingRecoverer(kafkaTemplate),
+                new FixedBackOff(1000, 3)
+        );
+        errorHandler.addRetryableExceptions(RetryableException.class);
+        errorHandler.addNotRetryableExceptions(NonRetryableException.class);
+
+        //factory.setCommonErrorHandler(errorHandler);
         return factory;
     }
 
