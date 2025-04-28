@@ -54,7 +54,7 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
 
         ConsumerRecord<String, WrongEvent> consumerRecord = KafkaTestUtils.getSingleRecord(
                 testConsumer,
-                "product-quantity-changed-events-topic.DTL",
+                "product-quantity-changed-events-topic.DLT",
                 Duration.ofMillis(10000)
         );
 
