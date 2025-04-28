@@ -13,6 +13,7 @@ public class ProductQuantityChangedHandler {
 
     @KafkaListener(topics = "product-quantity-changed-events-topic", groupId = "product-quantity-changed")
     public void handleEvent(ProductQuantityChangedEvent event) {
+        System.out.println("Received product quantity changed event: " + event);
         LOGGER.info("Event handled. Event is: {}", event.toString());
     }
 }
