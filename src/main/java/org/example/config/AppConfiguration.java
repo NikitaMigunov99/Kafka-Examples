@@ -94,7 +94,7 @@ public class AppConfiguration {
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class.getName());
         configProps.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "product-quantity-changed");
-        configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "org.example");
+        configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "org.example.models.event");
         return new DefaultKafkaConsumerFactory<>(configProps);
     }
 
