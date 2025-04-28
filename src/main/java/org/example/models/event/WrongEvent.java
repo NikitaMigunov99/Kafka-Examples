@@ -1,10 +1,12 @@
 package org.example.models.event;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 public class WrongEvent {
 
     private String title;
