@@ -106,18 +106,16 @@ public class AppConfiguration {
     @Bean
     public NewTopic topic1() {
         return TopicBuilder.name("product-created-events-topic")
-                .partitions(3)
-                .replicas(3)
-                .config("min.insync.replicas", "2")
+                .partitions(1)
+                .replicas(1)
                 .build();
     }
 
     @Bean
     public NewTopic topic2() {
         return TopicBuilder.name("product-quantity-changed-events-topic")
-                .partitions(3)
-                .replicas(3)
-                .config("min.insync.replicas", "2")
+                .partitions(1)
+                .replicas(1)
                 .build();
     }
 }
