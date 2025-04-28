@@ -77,12 +77,12 @@ public class AppConfiguration {
 
         DefaultErrorHandler errorHandler = new DefaultErrorHandler(
                 new DeadLetterPublishingRecoverer(kafkaTemplate),
-                new FixedBackOff(1000, 3)
+                new FixedBackOff(700, 3)
         );
         errorHandler.addRetryableExceptions(RetryableException.class);
         errorHandler.addNotRetryableExceptions(NonRetryableException.class);
 
-        //factory.setCommonErrorHandler(errorHandler);
+        factory.setCommonErrorHandler(errorHandler);
         return factory;
     }
 
@@ -91,8 +91,8 @@ public class AppConfiguration {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class.getName());
-        configProps.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
+        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class.getName());
+        //configProps.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "product-quantity-changed");
         configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "org.example.models.event");
         return new DefaultKafkaConsumerFactory<>(configProps);

@@ -36,7 +36,7 @@ public abstract class BaseTest {
                 "auto.offset.reset", "earliest",
                 "key.deserializer", StringDeserializer.class,
                 "value.deserializer", JsonDeserializer.class,
-                JsonDeserializer.TRUSTED_PACKAGES, "org.example.models.event"
+                JsonDeserializer.TRUSTED_PACKAGES, "*"
         );
     }
 
