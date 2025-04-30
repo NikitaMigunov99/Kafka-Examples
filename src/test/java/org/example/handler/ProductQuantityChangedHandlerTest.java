@@ -26,18 +26,31 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
         ProductQuantityChangedEvent event = new ProductQuantityChangedEvent("Some ID", 5);
         kafkaTemplate.send("product-quantity-changed-events-topic", event);
 
-//        var consumer = new DefaultKafkaConsumerFactory<String, ProductQuantityChangedEvent>(getConsumerProperties());
-//        ConsumerRecord<String, ProductQuantityChangedEvent> consumerRecord = KafkaTestUtils.getSingleRecord(
-//                consumer.createConsumer(),
-//                "product-quantity-changed-events-topic",
-//                Duration.ofMillis(10000)
-//        );
-//
-//        ProductQuantityChangedEvent value = consumerRecord.value();
-//        assertThat(event).isNotNull();
-//        assertThat(value).isEqualTo(event);
+        var consumerFactory = new DefaultKafkaConsumerFactory<String, ProductQuantityChangedEvent>(getConsumerProperties());
+        Consumer<String, ProductQuantityChangedEvent> testConsumer = consumerFactory.createConsumer("test-group", "test");
+        testConsumer.subscribe(List.of("product-quantity-changed-events-topic"));
 
-        Thread.sleep(1000);
+        ConsumerRecord<String, ProductQuantityChangedEvent> consumerRecord = KafkaTestUtils.getSingleRecord(
+                testConsumer,
+                "product-quantity-changed-events-topic",
+                Duration.ofMillis(10000)
+        );
+
+        ProductQuantityChangedEvent value = consumerRecord.value();
+        assertThat(event).isNotNull();
+        assertThat(value).isEqualTo(event);
+    }
+
+    @Test
+    public void testRetryableException() throws InterruptedException {
+        var factory = new DefaultKafkaProducerFactory<>(getProducerProperties());
+        var kafkaTemplate = new KafkaTemplate<>(factory);
+
+        for (int i = 0; i < 50; i++) {
+            ProductQuantityChangedEvent event = new ProductQuantityChangedEvent(String.valueOf(i), i);
+            kafkaTemplate.send("product-quantity-changed-events-topic", event);
+        }
+        Thread.sleep(10500);
     }
 
     @Test
