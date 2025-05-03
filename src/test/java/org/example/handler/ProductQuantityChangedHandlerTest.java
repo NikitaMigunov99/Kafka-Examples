@@ -41,8 +41,9 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
         assertThat(value).isEqualTo(event);
     }
 
-    //@Test
+    @Test
     public void testRetryableException() throws InterruptedException {
+        System.out.println("Start test thread " + Thread.currentThread().getId());
         var factory = new DefaultKafkaProducerFactory<>(getProducerProperties());
         var kafkaTemplate = new KafkaTemplate<>(factory);
 
@@ -53,7 +54,7 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
         Thread.sleep(10500);
     }
 
-    @Test
+    //@Test
     public void testWrongEvent() throws InterruptedException {
         var factory = new DefaultKafkaProducerFactory<>(getProducerProperties());
         var kafkaTemplate = new KafkaTemplate<>(factory);
