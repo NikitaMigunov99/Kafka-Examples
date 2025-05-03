@@ -82,7 +82,7 @@ public class AppConfiguration {
         errorHandler.addRetryableExceptions(RetryableException.class);
         errorHandler.addNotRetryableExceptions(NonRetryableException.class);
 
-        factory.setCommonErrorHandler(errorHandler);
+        //factory.setCommonErrorHandler(errorHandler);
         return factory;
     }
 
