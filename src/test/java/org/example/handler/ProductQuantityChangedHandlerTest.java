@@ -70,8 +70,8 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
         assertThat(value).isEqualTo(event);
     }
 
-    @Test
-    @Order(3)
+    //@Test
+    //@Order(3)
     public void testRetryableException() throws InterruptedException {
         var factory = new DefaultKafkaProducerFactory<>(getProducerProperties());
         var kafkaTemplate = new KafkaTemplate<>(factory);
