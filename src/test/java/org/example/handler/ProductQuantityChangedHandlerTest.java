@@ -60,21 +60,25 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
 
         WrongEvent event = new WrongEvent("Wrong event", "Try to get error with Deserialization");
         kafkaTemplate.send("product-quantity-changed-events-topic", event);
+        kafkaTemplate.send("product-quantity-changed-events-topic", "HelloKafka");
 
         Thread.sleep(10000);
 
-        var consumerFactory = new DefaultKafkaConsumerFactory<String, WrongEvent>(getConsumerProperties());
-        Consumer<String, WrongEvent> testConsumer = consumerFactory.createConsumer("test-group", "test");
-        testConsumer.subscribe(List.of("product-quantity-changed-events-topic.DLT"));
+        ProductQuantityChangedEvent normalEvent = new ProductQuantityChangedEvent("Some ID", 5);
+        kafkaTemplate.send("product-quantity-changed-events-topic", normalEvent);
 
-        ConsumerRecord<String, WrongEvent> consumerRecord = KafkaTestUtils.getSingleRecord(
+        var consumerFactory = new DefaultKafkaConsumerFactory<String, ProductQuantityChangedEvent>(getConsumerProperties());
+        Consumer<String, ProductQuantityChangedEvent> testConsumer = consumerFactory.createConsumer("test-group", "test");
+        testConsumer.subscribe(List.of("product-quantity-changed-events-topic"));
+
+        ConsumerRecord<String, ProductQuantityChangedEvent> consumerRecord = KafkaTestUtils.getSingleRecord(
                 testConsumer,
-                "product-quantity-changed-events-topic.DLT",
+                "product-quantity-changed-events-topic",
                 Duration.ofMillis(10000)
         );
 
-        WrongEvent value = consumerRecord.value();
+        ProductQuantityChangedEvent value = consumerRecord.value();
         assertThat(event).isNotNull();
-        assertThat(value).isEqualTo(event);
+        assertThat(value).isEqualTo(normalEvent);
     }
 }
