@@ -19,8 +19,8 @@ public class ProductQuantityChangedHandler {
     @KafkaListener(topics = "product-quantity-changed-events-topic", groupId = "product-quantity-changed")
     public void handleEvent(ProductQuantityChangedEvent event) {
         LOGGER.info("Processing event with id: {}, thread: {}", event.getProductId(), Thread.currentThread().getId());
-        if (event.getProductId().equals("5") && counter.incrementAndGet() < 3) {
-            LOGGER.info("Exception for id: 5");
+        if (event.getProductId().equals("5") && counter.incrementAndGet() < 50) {
+            LOGGER.info("Exception for id: 5, counter: {}", counter.get());
             throw new RetryableException("Exception thrown");
         }
         LOGGER.info("Event handled. Event is: {}", event);
