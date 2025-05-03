@@ -32,7 +32,7 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
         kafkaTemplate.send("product-quantity-changed-events-topic", event);
 
         var consumerFactory = new DefaultKafkaConsumerFactory<String, ProductQuantityChangedEvent>(getConsumerProperties());
-        Consumer<String, ProductQuantityChangedEvent> testConsumer = consumerFactory.createConsumer("test-group", "test");
+        Consumer<String, ProductQuantityChangedEvent> testConsumer = consumerFactory.createConsumer("test-group-1", "test");
         testConsumer.subscribe(List.of("product-quantity-changed-events-topic"));
 
         ConsumerRecord<String, ProductQuantityChangedEvent> consumerRecord = KafkaTestUtils.getSingleRecord(
@@ -56,7 +56,7 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
         kafkaTemplate.send("product-quantity-changed-events-topic", event);
 
         var consumerFactory = new DefaultKafkaConsumerFactory<String, WrongEvent>(getConsumerProperties());
-        Consumer<String, WrongEvent> testConsumer = consumerFactory.createConsumer("test-group", "test");
+        Consumer<String, WrongEvent> testConsumer = consumerFactory.createConsumer("test-group-2", "test");
         testConsumer.subscribe(List.of("product-quantity-changed-events-topic.DLT"));
 
         ConsumerRecord<String, WrongEvent> consumerRecord = KafkaTestUtils.getSingleRecord(
