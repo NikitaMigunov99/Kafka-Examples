@@ -46,8 +46,8 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
         assertThat(value).isEqualTo(event);
     }
 
-    //@Test
-    //@Order(2)
+    @Test
+    @Order(2)
     public void testWrongEvent() {
         var factory = new DefaultKafkaProducerFactory<>(getProducerProperties());
         var kafkaTemplate = new KafkaTemplate<>(factory);
