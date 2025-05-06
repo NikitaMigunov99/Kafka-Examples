@@ -27,10 +27,6 @@ public class ProductQuantityChangedHandler {
         String time = now.format(formatter);
         ProductQuantityChangedEvent event = record.value();
         LOGGER.info("Processing event with id: {}, thread: {}, time: {}", event.getProductId(), Thread.currentThread().getId(), time);
-        if (event.getProductId().equals("5") && counter.incrementAndGet() < 50) {
-            LOGGER.info("Exception for id: 5, counter: {}", counter.get());
-            return;
-        }
         ack.acknowledge();
         LOGGER.info("Event handled. Event is: {}", event);
     }
