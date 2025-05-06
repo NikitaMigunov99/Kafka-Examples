@@ -20,7 +20,7 @@ public class ProductQuantityChangedHandler {
 
     private final AtomicInteger counter = new AtomicInteger(0);
 
-    @KafkaListener(topics = "product-quantity-changed-events-topic", groupId = "product-quantity-changed", batch = "false")
+    @KafkaListener(topics = "product-quantity-changed-events-topic", groupId = "product-quantity-changed")
     public void handleEvent(ConsumerRecord<String, ProductQuantityChangedEvent> record, Acknowledgment ack) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -29,7 +29,7 @@ public class ProductQuantityChangedHandler {
         LOGGER.info("Processing event with id: {}, thread: {}, time: {}", event.getProductId(), Thread.currentThread().getId(), time);
         if (event.getProductId().equals("5") && counter.incrementAndGet() < 50) {
             LOGGER.info("Exception for id: 5, counter: {}", counter.get());
-            throw new RetryableException("Exception thrown");
+            return;
         }
         ack.acknowledge();
         LOGGER.info("Event handled. Event is: {}", event);
