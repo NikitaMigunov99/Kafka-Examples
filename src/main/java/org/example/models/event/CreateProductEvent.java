@@ -18,6 +18,15 @@ public class CreateProductEvent {
         this.quantity = quantity;
     }
 
+    @Override
+    public String toString() {
+        return "CreateProductEvent{" +
+                "productId='" + productId + '\'' +
+                ", title='" + title + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                '}';
+    }
 
     public String getProductId() {
         return productId;
