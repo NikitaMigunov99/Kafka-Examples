@@ -29,7 +29,7 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
         var kafkaTemplate = new KafkaTemplate<>(factory);
 
         ProductQuantityChangedEvent event = new ProductQuantityChangedEvent("Some ID", 5);
-        kafkaTemplate.send("product-quantity-changed-events-topic", event);
+        kafkaTemplate.send("product-quantity-changed-events-topic", "key", event);
 
         var consumerFactory = new DefaultKafkaConsumerFactory<String, ProductQuantityChangedEvent>(getConsumerProperties());
         Consumer<String, ProductQuantityChangedEvent> testConsumer = consumerFactory.createConsumer("test-group-1", "test");
