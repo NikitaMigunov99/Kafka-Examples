@@ -20,7 +20,7 @@ public class ProductQuantityChangedHandler {
 
     private final AtomicInteger counter = new AtomicInteger(0);
 
-    @KafkaListener(topics = "product-quantity-changed-events-topic", groupId = "product-quantity-changed")
+    @KafkaListener(topics = "product-quantity-changed-events-topic", groupId = "product-quantity-changed", batch = "false")
     public void handleEvent(ConsumerRecord<String, ProductQuantityChangedEvent> record, Acknowledgment ack) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
