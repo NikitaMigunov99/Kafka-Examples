@@ -68,6 +68,9 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
         WrongEvent value = consumerRecord.value();
         assertThat(value).isNotNull();
         assertThat(value).isEqualTo(event);
+
+        ProductQuantityChangedEvent normalEvent = new ProductQuantityChangedEvent("New ID", 155);
+        kafkaTemplate.send("product-quantity-changed-events-topic", normalEvent);
     }
 
     @Test
