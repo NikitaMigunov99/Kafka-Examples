@@ -24,7 +24,7 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
 
     @Test
     @Order(1)
-    public void getEvent() throws InterruptedException {
+    public void getEvent() {
         var factory = new DefaultKafkaProducerFactory<>(getProducerProperties());
         var kafkaTemplate = new KafkaTemplate<>(factory);
 
@@ -42,7 +42,7 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
         );
 
         ProductQuantityChangedEvent value = consumerRecord.value();
-        assertThat(event).isNotNull();
+        assertThat(value).isNotNull();
         assertThat(value).isEqualTo(event);
     }
 
@@ -66,7 +66,7 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
         );
 
         WrongEvent value = consumerRecord.value();
-        assertThat(event).isNotNull();
+        assertThat(value).isNotNull();
         assertThat(value).isEqualTo(event);
     }
 
