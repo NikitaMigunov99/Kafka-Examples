@@ -89,7 +89,7 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
 
     @Test
     @Order(4)
-    public void checkIdempotence() {
+    public void checkIdempotence() throws InterruptedException {
         var factory = new DefaultKafkaProducerFactory<String, Object>(getProducerProperties());
         var kafkaTemplate = new KafkaTemplate<>(factory);
 
