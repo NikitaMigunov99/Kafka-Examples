@@ -103,13 +103,16 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
         kafkaTemplate.send(firstRecord);
 
         String requestIdSecond = "222";
-        ProductQuantityChangedEvent secondEvent = new ProductQuantityChangedEvent("22222", 7);
-        ProducerRecord<String, Object> secondRecord = new
-                ProducerRecord<>(
-                "product-quantity-changed-events-topic",
-                secondEvent);
-        secondRecord.headers().add("requestId", requestIdSecond.getBytes());
-        kafkaTemplate.send(secondRecord);
-        kafkaTemplate.send(secondRecord); // send duplicate event
+        int i = 0;
+        while (i < 3) {
+            ProductQuantityChangedEvent secondEvent = new ProductQuantityChangedEvent("22222" + i, 7);
+            ProducerRecord<String, Object> secondRecord = new
+                    ProducerRecord<>(
+                    "product-quantity-changed-events-topic",
+                    secondEvent);
+            secondRecord.headers().add("requestId", requestIdSecond.getBytes());
+            kafkaTemplate.send(secondRecord);
+            i++;
+        }
     }
 }
