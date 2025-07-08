@@ -28,6 +28,7 @@ public abstract class BaseTest {
     @DynamicPropertySource
     static void kafkaProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers);
+        System.out.println("spring.kafka.bootstrap-servers: "+ kafkaContainer.getBootstrapServers());
     }
 
     protected Map<String, Object> getConsumerProperties() {

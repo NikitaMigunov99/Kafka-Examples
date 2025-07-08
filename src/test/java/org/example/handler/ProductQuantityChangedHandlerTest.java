@@ -2,6 +2,7 @@ package org.example.handler;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.example.models.event.ProductQuantityChangedEvent;
 import org.example.models.event.WrongEvent;
 import org.example.utils.BaseTest;
@@ -84,5 +85,31 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
             kafkaTemplate.send("product-quantity-changed-events-topic", event);
         }
         Thread.sleep(10500);
+    }
+
+    @Test
+    @Order(4)
+    public void checkIdempotence() {
+        var factory = new DefaultKafkaProducerFactory<String, Object>(getProducerProperties());
+        var kafkaTemplate = new KafkaTemplate<>(factory);
+
+        String requestIdFirst = "111";
+        ProductQuantityChangedEvent firstEvent = new ProductQuantityChangedEvent("11111", 5);
+        ProducerRecord<String, Object> firstRecord = new
+                ProducerRecord<>(
+                "product-quantity-changed-events-topic",
+                firstEvent);
+        firstRecord.headers().add("requestId", requestIdFirst.getBytes());
+        kafkaTemplate.send(firstRecord);
+
+        String requestIdSecond = "222";
+        ProductQuantityChangedEvent secondEvent = new ProductQuantityChangedEvent("22222", 7);
+        ProducerRecord<String, Object> secondRecord = new
+                ProducerRecord<>(
+                "product-quantity-changed-events-topic",
+                secondEvent);
+        secondRecord.headers().add("requestId", requestIdSecond.getBytes());
+        kafkaTemplate.send(secondRecord);
+        kafkaTemplate.send(secondRecord); // send duplicate event
     }
 }
