@@ -33,7 +33,7 @@ public class ProductQuantityChangedHandler {
     @KafkaListener(topics = "product-quantity-changed-events-topic", groupId = "product-quantity-changed")
     public void handleEvent(@Payload ProductQuantityChangedEvent event,
                             @Header(value = "requestId", required = false) String requestId,
-                            @Header(KafkaHeaders.RECEIVED_KEY) String receivedKey) {
+                            @Header(value =KafkaHeaders.RECEIVED_KEY, required = false) String receivedKey) {
         if (receivedKey != null) {
             LOGGER.info("Received key: {}", receivedKey);
         }
