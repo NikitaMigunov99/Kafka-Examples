@@ -114,5 +114,6 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
             kafkaTemplate.send(secondRecord);
             i++;
         }
+        Thread.sleep(1000);
     }
 }

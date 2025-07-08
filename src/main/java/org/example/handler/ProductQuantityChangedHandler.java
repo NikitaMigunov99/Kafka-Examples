@@ -41,6 +41,7 @@ public class ProductQuantityChangedHandler {
             Optional<ProcessedEventEntity> processedEventEntity = repository.findByRequestId(requestId);
             if (processedEventEntity.isPresent()) {
                 LOGGER.info("Event already processed. Request id is {}, Event is: {}", requestId, event);
+                return;
             }
         }
         LocalDateTime now = LocalDateTime.now();
