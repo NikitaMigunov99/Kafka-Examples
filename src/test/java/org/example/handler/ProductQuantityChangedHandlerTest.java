@@ -59,6 +59,9 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
         WrongEvent event = new WrongEvent("Wrong event", "Try to get error with Deserialization");
         kafkaTemplate.send("product-quantity-changed-events-topic", event);
 
+        ProductQuantityChangedEvent normalEventSecond = new ProductQuantityChangedEvent("New ID second", 333);
+        kafkaTemplate.send("product-quantity-changed-events-topic", normalEventFirst);
+
         var consumerFactory = new DefaultKafkaConsumerFactory<String, WrongEvent>(getConsumerProperties());
         Consumer<String, WrongEvent> testConsumer = consumerFactory.createConsumer("test-group-2", "test");
         testConsumer.subscribe(List.of("product-quantity-changed-events-topic.DLT"));
