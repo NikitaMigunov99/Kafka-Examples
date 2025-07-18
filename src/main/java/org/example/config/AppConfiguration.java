@@ -100,19 +100,19 @@ public class AppConfiguration {
         return new DefaultKafkaConsumerFactory<>(configProps);
     }
 
-    @Bean
-    public KafkaTemplate<String, Object> deadLetterKafkaTemplate(ProducerFactory<String, Object> factory) {
-        return new KafkaTemplate<>(factory);
-    }
-
-    @Bean
-    public ProducerFactory<String, Object> deadLetterProducerFactory() {
-        Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class.getName());
-        return new DefaultKafkaProducerFactory<>(configProps);
-    }
+//    @Bean
+//    public KafkaTemplate<String, Object> deadLetterKafkaTemplate(ProducerFactory<String, Object> factory) {
+//        return new KafkaTemplate<>(factory);
+//    }
+//
+//    @Bean
+//    public ProducerFactory<String, Object> deadLetterProducerFactory() {
+//        Map<String, Object> configProps = new HashMap<>();
+//        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+//        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+//        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class.getName());
+//        return new DefaultKafkaProducerFactory<>(configProps);
+//    }
 
     @Bean
     public KafkaTransactionManager<String, Object> kafkaTransactionManager(ProducerFactory<String, Object> factory) {
