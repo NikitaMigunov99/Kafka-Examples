@@ -46,8 +46,8 @@ public class UpdateProductServiceTest extends BaseTest {
         }
 
         var consumerFactorySecond = new DefaultKafkaConsumerFactory<String, UpdateProductEvent>(getConsumerPropertiesReadCommited());
-        Consumer<String, UpdateProductEvent> testConsumerSecond = consumerFactorySecond.createConsumer("test-2", "test-1");
-        testConsumer.subscribe(List.of("update-product-events-topic"));
+        Consumer<String, UpdateProductEvent> testConsumerSecond = consumerFactorySecond.createConsumer("test-2", "test-2");
+        testConsumerSecond.subscribe(List.of("update-product-events-topic"));
 
         ConsumerRecords<String, UpdateProductEvent> consumerRecordsSecond = KafkaTestUtils.getRecords(
                 testConsumerSecond,
