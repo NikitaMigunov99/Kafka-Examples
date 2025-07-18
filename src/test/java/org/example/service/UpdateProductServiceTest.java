@@ -27,7 +27,7 @@ public class UpdateProductServiceTest extends BaseTest {
         UpdateProductEvent event = new UpdateProductEvent("333", "New Product Name");
         service.updateProduct(event, false);
         try {
-            service.updateProduct(event, true);
+            service.updateProduct(new UpdateProductEvent("555", "New Product Name 5"), true);
         } catch (Exception e) {
             System.out.println("Exception was thrown");
         }

@@ -18,19 +18,24 @@ public class UpdateProductService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    @Transactional
+    @Transactional(transactionManager = "kafkaTransactionManager")
     public void updateProduct(UpdateProductEvent event, boolean throwException) {
+        log.info("New event {}", event);
         boolean isWithinTransaction = TransactionSynchronizationManager.isActualTransactionActive();
-        log.info("Is transaction available " + isWithinTransaction);
+        log.info("First is transaction available {}", isWithinTransaction);
         kafkaTemplate.send("update-product-events-topic", event);
+
+        log.info("Second is transaction available {}", isWithinTransaction);
 
         AuditEvent auditEvent = new AuditEvent(event.getProductId(), "update-product");
         kafkaTemplate.send("audit-events-topic", auditEvent);
 
+        log.info("Third is transaction available {}", isWithinTransaction);
         if (throwException) {
             try {
                 Thread.sleep(1000);
-            } catch (Exception e) {
+                throw new RuntimeException("Something went wrong");
+            } catch (InterruptedException e) {
                 log.error("Unknown error ", e);
             }
         }

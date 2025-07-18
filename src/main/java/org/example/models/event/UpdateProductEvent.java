@@ -27,4 +27,12 @@ public class UpdateProductEvent {
     public void setProductId(String productId) {
         this.productId = productId;
     }
+
+    @Override
+    public String toString() {
+        return "UpdateProductEvent{" +
+                "productId='" + productId + '\'' +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }
