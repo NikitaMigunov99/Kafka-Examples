@@ -27,10 +27,16 @@ public class UpdateProductServiceTest extends BaseTest {
         UpdateProductEvent event = new UpdateProductEvent("333", "New Product Name");
         service.updateProduct(event, false);
         try {
-            service.updateProduct(new UpdateProductEvent("555", "New Product Name 5"), true);
+            service.updateProduct(new UpdateProductEvent("555", "New Product Name Exception 5"), true);
         } catch (Exception e) {
             System.out.println("Exception was thrown");
         }
+        try {
+            service.updateProduct(new UpdateProductEvent("777", "New Product Name Exception"), true);
+        } catch (Exception e) {
+            System.out.println("Exception was thrown");
+        }
+        service.updateProduct(new UpdateProductEvent("237", "New Product Name 237"), false);
 
         var consumerFactory = new DefaultKafkaConsumerFactory<String, UpdateProductEvent>(getConsumerProperties());
         Consumer<String, UpdateProductEvent> testConsumer = consumerFactory.createConsumer("test-1", "test-1");
