@@ -53,6 +53,9 @@ public class ProductQuantityChangedHandlerTest extends BaseTest {
         var factory = new DefaultKafkaProducerFactory<>(getProducerProperties());
         var kafkaTemplate = new KafkaTemplate<>(factory);
 
+        ProductQuantityChangedEvent normalEventFirst = new ProductQuantityChangedEvent("New ID first", 255);
+        kafkaTemplate.send("product-quantity-changed-events-topic", normalEventFirst);
+
         WrongEvent event = new WrongEvent("Wrong event", "Try to get error with Deserialization");
         kafkaTemplate.send("product-quantity-changed-events-topic", event);
 

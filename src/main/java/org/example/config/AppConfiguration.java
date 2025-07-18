@@ -8,7 +8,6 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.example.exception.NonRetryableException;
 import org.example.exception.RetryableException;
-import org.example.models.event.CreateProductEvent;
 import org.example.models.event.ProductQuantityChangedEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,9 +23,9 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
-import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.kafka.transaction.KafkaTransactionManager;
 import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
@@ -47,12 +46,12 @@ public class AppConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, CreateProductEvent> kafkaTemplate(ProducerFactory<String, CreateProductEvent> factory) {
+    public KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> factory) {
         return new KafkaTemplate<>(factory);
     }
 
     @Bean
-    public ProducerFactory<String, CreateProductEvent> producerFactory() {
+    public ProducerFactory<String, Object> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
@@ -64,6 +63,9 @@ public class AppConfiguration {
         configProps.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, 10000);
         configProps.put(ProducerConfig.LINGER_MS_CONFIG, 100);
         configProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+
+        int randomNumber = (int) (Math.random() * 100) + 1;
+        configProps.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, "tx-producer-id-" + randomNumber);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
@@ -113,6 +115,11 @@ public class AppConfiguration {
     }
 
     @Bean
+    public KafkaTransactionManager<String, Object> kafkaTransactionManager(ProducerFactory<String, Object> factory) {
+        return new KafkaTransactionManager<>(factory);
+    }
+
+    @Bean
     public NewTopic topic1() {
         return TopicBuilder.name("product-created-events-topic")
                 .partitions(1)
@@ -123,6 +130,22 @@ public class AppConfiguration {
     @Bean
     public NewTopic topic2() {
         return TopicBuilder.name("product-quantity-changed-events-topic")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic topic3() {
+        return TopicBuilder.name("update-product-events-topic")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic topic4() {
+        return TopicBuilder.name("audit-events-topic")
                 .partitions(1)
                 .replicas(1)
                 .build();

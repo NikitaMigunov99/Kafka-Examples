@@ -19,7 +19,7 @@ public abstract class BaseTest {
     private static final KafkaContainer kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"));
 
     @Value(value = "${spring.kafka.bootstrap-servers}")
-    private String bootstrapAddress;
+    protected String bootstrapAddress;
 
     static {
         kafkaContainer.start();
