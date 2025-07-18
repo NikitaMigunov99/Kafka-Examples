@@ -14,9 +14,9 @@ import java.util.UUID;
 public class CreateProductService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateProductService.class);
-    private final KafkaTemplate<String, CreateProductEvent> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public CreateProductService(KafkaTemplate<String, CreateProductEvent> kafkaTemplate) {
+    public CreateProductService(KafkaTemplate<String, Object> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
