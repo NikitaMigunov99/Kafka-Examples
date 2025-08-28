@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ public class CreateProductService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
+    @Transactional
     public String createProduct(CreateProductDTO productDTO) {
         String id = UUID.randomUUID().toString();
         var event = new CreateProductEvent(id, productDTO.title(), productDTO.price(), productDTO.quantity());
