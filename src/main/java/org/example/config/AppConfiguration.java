@@ -79,7 +79,7 @@ public class AppConfiguration {
 
         DefaultErrorHandler errorHandler = new DefaultErrorHandler(
                 new DeadLetterPublishingRecoverer(kafkaTemplate),
-                new FixedBackOff(1000, 1)
+                new FixedBackOff(1000, 1) // consumer will retry after 1 second once after the first failure
         );
         errorHandler.addRetryableExceptions(RetryableException.class);
         errorHandler.addNotRetryableExceptions(NonRetryableException.class);
