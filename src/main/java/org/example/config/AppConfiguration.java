@@ -4,6 +4,7 @@ import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.errors.RecordDeserializationException;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.example.exception.NonRetryableException;
@@ -23,7 +24,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
-import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
+import org.springframework.kafka.support.serializer.DeserializationException;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.kafka.transaction.KafkaTransactionManager;
@@ -80,10 +81,14 @@ public class AppConfiguration {
 
         DefaultErrorHandler errorHandler = new DefaultErrorHandler(
                 new DeadLetterPublishingRecoverer(kafkaTemplate),
-                new FixedBackOff(1000, 1) // consumer will retry after 1 second once after the first failure
+                new FixedBackOff(1000, 1)
         );
         errorHandler.addRetryableExceptions(RetryableException.class);
         errorHandler.addNotRetryableExceptions(NonRetryableException.class);
+        errorHandler.addNotRetryableExceptions(
+                DeserializationException.class,
+                RecordDeserializationException.class
+        );
 
         factory.setCommonErrorHandler(errorHandler);
         return factory;
@@ -95,7 +100,7 @@ public class AppConfiguration {
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class.getName());
-        configProps.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
+        //configProps.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "product-quantity-changed");
         configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "org.example.models.event");
         configProps.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
