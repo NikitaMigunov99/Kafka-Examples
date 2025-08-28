@@ -79,7 +79,7 @@ public class AppConfiguration {
 
         DefaultErrorHandler errorHandler = new DefaultErrorHandler(
                 new DeadLetterPublishingRecoverer(kafkaTemplate),
-                new FixedBackOff(1000, 3)
+                new FixedBackOff(1000, 1)
         );
         errorHandler.addRetryableExceptions(RetryableException.class);
         errorHandler.addNotRetryableExceptions(NonRetryableException.class);
